@@ -3,7 +3,7 @@
      <head>
         <meta name="apple-mobile-web-app-capable" content="yes">
         <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+        <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/dev/aframe/build/aframe-ar.js"></script>
         <script src="https://rawgit.com/oscarmarinmiro/aframe-video-controls/master/dist/aframe-video-controls.min.js"></script>
      </head>
 
@@ -25,7 +25,6 @@
           const videoElement = document.getElementById("#test-video");
           const vid = document.querySelector("video");
 
-          marker.setAttribute("emitevents","true");
           marker.addEventListener("markerFound", () => {
             var markerId = marker.id;
             console.log("markerFound", markerId);
