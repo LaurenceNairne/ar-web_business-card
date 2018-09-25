@@ -36,13 +36,14 @@
      </head>
 
      <body style='margin : 0px; overflow: hidden;'>
-        <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.90;">
-           <a-assets>
+         <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.90; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+            <a-assets>
               <video id="test-video" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/test_video.mp4" webkit-playsinline crossorigin="https://s.codepen.io">
-           </a-assets>
-           <a-video id="a-video" src="#test-video" rotation="-70 0 0" position="0 0.1 -1" width="1.6" height="0.9"></a-video>
-           <a-marker-camera id="marker" preset="custom" type="pattern" url="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/arcode.patt" registerevents></a-marker-camera>
+            </a-assets>
+            <a-marker id="marker" preset="custom" type="pattern" url="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/arcode.patt" registerevents>
+              <a-video id="a-video" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/test_video.mp4" rotation="-70 0 0" position="0 0.1 -1" width="1.6" height="0.9"></a-video>
+            </a-marker>
+            <a-entity camera></a-entity>
         </a-scene>
      </body>
-
   </html>
