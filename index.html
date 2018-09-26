@@ -21,8 +21,6 @@
                     // code to turn element visibility on.
                     a_vid.setAttribute("visible", "true");
   
-                    // I only want the video to be resumed on markerFound if it was automatically paused
-                    // when markerLost was called.
                     if (autoPaused === true) {
                       vid.play();
                       autoPaused = false;
@@ -53,9 +51,11 @@
                   } else {
                     vid.pause();
                   }
-                  } else {
-                    console.error("Not enough data to play the video.");
-                  }
+                } else {
+                  console.error("Not enough data to play the video.");
+                }
+                  console.log("I've been clicked!");
+                  // Code for pause/play
                 });
               }
             });
