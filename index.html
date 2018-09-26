@@ -1,49 +1,80 @@
 <DOCTYPE html>
-  <html>
-     <head>
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-        <script src="https://rawgit.com/LaurenceNairne/AR.js/master/aframe/build/aframe-ar.js"></script>
-        <!--<script src="https://rawgit.com/oscarmarinmiro/aframe-video-controls/master/dist/aframe-video-controls.min.js"></script>-->
-        <script> 
-          AFRAME.registerComponent('registerevents', { 
-            init: function () { 
-              const marker = this.el;
-              const vid = document.getElementById("test-video");
-              const a_vid = document.getElementById("a-video");
-
-              a_vid.setAttribute("visible", "false");
-
-              marker.addEventListener("markerFound", () => {
-                var markerId = marker.id;
-                console.log("markerFound", markerId);
-
-                // code to make video play and turn element visibility on.
-                a_vid.setAttribute("visible", "true");
-                vid.play();
-              });
-              marker.addEventListener ("markerLost", () => {
-                var markerId = marker.id;
-                console.log("markerLost", markerId);
-
-                // code to make video pause and turn visibility off.
-                vid.pause();
-                a_vid.setAttribute("visible", "false");
-              });
-            }
-          }); 
-        </script>
-     </head>
-
-     <body style='margin : 0px; overflow: hidden;'>
-         <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.90; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
-            <a-assets>
-              <video id="test-video" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/test_video.mp4" webkit-playsinline crossorigin="https://s.codepen.io">
-            </a-assets>
-            <a-marker id="marker" preset="custom" type="pattern" url="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/arcode.patt" registerevents>
-              <a-video id="a-video" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/test_video.mp4" rotation="-70 0 0" position="0 0.1 -1" width="1.6" height="0.9"></a-video>
-            </a-marker>
-            <a-entity camera></a-entity>
-        </a-scene>
-     </body>
-  </html>
+    <html>
+        <head>
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+            <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/dev/aframe/build/aframe-ar.js"></script>
+            <script> 
+              AFRAME.registerComponent("registerevents", { 
+                init: function () { 
+                  const marker = this.el;
+                  const vid = document.getElementById("test-video");
+                  const a_vid = document.getElementById("a-video");
+                  let autoPaused = false;
+  
+                  a_vid.setAttribute("visible", "false");
+  
+                  marker.addEventListener("markerFound", () => {
+                    const markerId = marker.id;
+                    console.log("markerFound", markerId);
+  
+                    // code to turn element visibility on.
+                    a_vid.setAttribute("visible", "true");
+  
+                    if (autoPaused === true) {
+                      vid.play();
+                      autoPaused = false;
+                    }
+                  });
+                  marker.addEventListener ("markerLost", () => {
+                    const markerId = marker.id;
+                    console.log("markerLost", markerId);
+  
+                    // code to turn element visibility off.
+                    a_vid.setAttribute("visible", "false");
+                    if (vid.currentTime !== 0 && !vid.paused && !vid.ended) {
+                      autoPaused = true;
+                      vid.pause();
+                    }
+                  });
+                }
+              }); 
+          </script>
+          <script>
+            AFRAME.registerComponent("clickevents", {
+              init: function() {
+                const vid = document.querySelector("video");
+                this.el.addEventListener("click", function() {
+                  if(vid.readyState === 4) {
+                  if(vid.currentTime === 0 || vid.paused || vid.ended ) {
+                    vid.play();
+                  } else {
+                    vid.pause();
+                  }
+                } else {
+                  console.error("Not enough data to play the video.");
+                }
+                  console.log("I've been clicked!");
+                  // Code for pause/play
+                });
+              }
+            });
+          </script>
+        </head>
+        <body style='margin : 0px; overflow: hidden;'>
+            <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; patternRatio: 0.90; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+                <a-assets>
+                  <video id="test-video" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/test_video.mp4" webkit-playsinline crossorigin="https://s.codepen.io"></video>
+                  <img id="playbutton" src="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/playbutton.png" crossorigin="https://s.codepen.io">
+                </a-assets>
+                <a-marker id="marker" preset="custom" type="pattern" url="https://s3.eu-west-2.amazonaws.com/ln-test-bucket/arcode2.patt" registerevents>
+                  <a-video clickevents id="a-video" src="#test-video" rotation="-70 0 0" width="1.6" height="0.9">
+                    <a-image src="#playbutton" material="alphaTest: 0.5" position="0 0 0.1" height="0.3" width="0.3"></a-image>
+                  </a-video>
+                </a-marker>
+                <a-entity camera id="originCamera">
+                  <a-entity cursor="fuse:false; rayOrigin: mouse"></a-entity> 
+                </a-entity>
+            </a-scene>
+        </body>
+    </html>
